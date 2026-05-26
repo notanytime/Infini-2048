@@ -1,5 +1,7 @@
 # Infini-2048
 
+**[在线试玩](https://notanytime.github.io/Infini-2048/)**
+
 2048 变体游戏 — 达到2048后棋盘自动扩展，3D渲染，四级材质系统。
 
 ## 玩法
