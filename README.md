@@ -34,3 +34,5 @@ npm run build     # 生产构建 → dist/
 ## 技术栈
 
 Vue 3 + Vite + TypeScript + Three.js + Pinia + Vue I18n
+
+以上Ai写的有问题很正常
