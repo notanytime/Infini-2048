@@ -4,6 +4,9 @@
 
 2048 变体游戏 — 达到2048后棋盘自动扩展，3D渲染，四级材质系统。
 
+<img width="508" height="671" alt="image" src="https://github.com/user-attachments/assets/4840a612-26b3-4ef1-b794-7cb7b5781b68" />
+
+
 ## 玩法
 
 - 方向键滑动合并数字，**首次合成2048** → 棋盘+1行列（5×5），后续每翻倍继续扩展
