@@ -369,7 +369,7 @@ onUnmounted(() => { cleanup() })
 .canvas-container {
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -379,7 +379,7 @@ onUnmounted(() => { cleanup() })
 .game-canvas {
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 200px;
   display: block;
 }
 .debug-cursor {
