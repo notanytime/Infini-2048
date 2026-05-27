@@ -153,7 +153,7 @@ html, body {
   justify-content: center;
   width: 100%;
   max-width: 650px;
-  min-height: 300px;
+  min-height: 650px;
   overflow: hidden;
 }
 
