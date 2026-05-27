@@ -141,9 +141,24 @@ function handleResize() {
 async function initCanvas() {
   await document.fonts.ready
   if (!canvasRef.value || !containerRef.value) return
+
+  await new Promise<void>(resolve => {
+    const check = () => {
+      const rect = containerRef.value!.getBoundingClientRect()
+      if (rect.width > 0 && rect.height > 0) {
+        resolve()
+      } else {
+        requestAnimationFrame(check)
+      }
+    }
+    check()
+  })
+
   const rect = containerRef.value.getBoundingClientRect()
-  canvasRef.value.width = rect.width
-  canvasRef.value.height = rect.height
+  const w = Math.max(rect.width, 300)
+  const h = Math.max(rect.height, 300)
+  canvasRef.value.width = w
+  canvasRef.value.height = h
 
   assets = createScene(canvasRef.value)
   createParticleSystem(assets.particleGroup)
@@ -212,15 +227,16 @@ onUnmounted(() => { cleanup() })
 .canvas-container {
   width: 100%;
   height: 100%;
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
   touch-action: none;
-  aspect-ratio: 1;
 }
 .game-canvas {
   width: 100%;
   height: 100%;
+  min-height: 300px;
   display: block;
 }
 </style>

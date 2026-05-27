@@ -3,19 +3,24 @@ import { useGameStore } from '../stores/game'
 
 const gameStore = useGameStore()
 
-function fillRandom() {
-  const powers = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
-  let maxId = 0
-  for (let ri = 0; ri < gameStore.state.gridSize; ri++)
-    for (let ci = 0; ci < gameStore.state.gridSize; ci++) {
-      const t = gameStore.state.grid[ri]?.[ci]
-      if (t && t.id > maxId) maxId = t.id
+function getMaxId(): number {
+  let max = 0
+  for (let r = 0; r < gameStore.state.gridSize; r++)
+    for (let c = 0; c < gameStore.state.gridSize; c++) {
+      const t = gameStore.state.grid[r]?.[c]
+      if (t && t.id > max) max = t.id
     }
+  return max
+}
+
+function fillRandom() {
+  const powers = [2, 4, 8, 16, 32, 64, 128, 256]
+  let id = getMaxId()
   for (let r = 0; r < gameStore.state.gridSize; r++)
     for (let c = 0; c < gameStore.state.gridSize; c++) {
       if (!gameStore.state.grid[r][c]) {
         gameStore.state.grid[r][c] = {
-          id: ++maxId,
+          id: ++id,
           value: powers[Math.floor(Math.random() * powers.length)],
           row: r, col: c,
         }
@@ -42,8 +47,17 @@ function resetSave() {
   localStorage.removeItem('infini2048_highScore')
 }
 
+function clearGrid() {
+  gameStore.state.gridSize = 4
+  gameStore.state.grid = Array.from({ length: 4 }, () => Array(4).fill(null))
+  gameStore.state.score = 0
+  gameStore.state.comboCount = 0
+  gameStore.state.gameOver = false
+  gameStore.state.history = []
+}
+
 function fillTestGrid() {
-  gameStore.newGame()
+  clearGrid()
   const tiles = [
     [1024, 1024, 512, 512],
     [256, 256, 128, 64],
@@ -58,7 +72,7 @@ function fillTestGrid() {
 }
 
 function fillAllTiers() {
-  gameStore.newGame()
+  clearGrid()
   const specs: [number, number, number][] = [
     [0, 0, 2], [0, 1, 8], [0, 2, 64], [0, 3, 256],
     [1, 0, 512], [1, 1, 1024], [1, 2, 2048], [1, 3, 8192],

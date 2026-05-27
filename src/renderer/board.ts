@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { createTileMaterial } from './materials'
+import { createTileMaterial, clearMaterialCache } from './materials'
 import { createTextPlane, clearTextureCache } from './text'
 import type { Tile } from '../types'
 
@@ -176,4 +176,5 @@ export function clearBoard(boardGroup: THREE.Group) {
   boardState.gridCells = null
   boardState.size = 0
   clearTextureCache()
+  clearMaterialCache()
 }
