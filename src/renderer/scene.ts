@@ -31,7 +31,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneAssets {
     0.1,
     100,
   )
-  camera.position.set(0, 14, 3)
+  camera.position.set(0, 10, 8)
   camera.lookAt(0, 0, 0)
 
   const lightGroup = new THREE.Group()
@@ -57,6 +57,10 @@ export function createScene(canvas: HTMLCanvasElement): SceneAssets {
   const fillLight = new THREE.DirectionalLight('#8899ff', 0.4)
   fillLight.position.set(-5, 3, -5)
   lightGroup.add(fillLight)
+
+  const rimLight = new THREE.DirectionalLight('#ffffff', 1.2)
+  rimLight.position.set(8, 4, -8)
+  lightGroup.add(rimLight)
 
   const boardGroup = new THREE.Group()
   scene.add(boardGroup)

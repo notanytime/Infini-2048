@@ -4,7 +4,7 @@ import { useGameStore } from '../stores/game'
 const gameStore = useGameStore()
 
 function fillRandom() {
-  const powers = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+  const powers = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
   let maxId = 0
   for (let ri = 0; ri < gameStore.state.gridSize; ri++)
     for (let ci = 0; ci < gameStore.state.gridSize; ci++) {
