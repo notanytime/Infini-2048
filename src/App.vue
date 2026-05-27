@@ -86,7 +86,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #1a1a2e;
-  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-family: 'Poppins', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
   color: #e0e0e0;
 }
 
@@ -99,9 +99,10 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow-y: auto;
   max-width: 750px;
   margin: 0 auto;
   padding: 12px;
