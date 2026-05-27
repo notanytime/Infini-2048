@@ -147,13 +147,13 @@ html, body {
 }
 
 .game-main {
-  flex: 1;
+  flex: 0 1 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 650px;
-  min-height: 0;
+  min-height: 400px;
 }
 
 .game-footer {
