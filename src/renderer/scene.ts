@@ -31,7 +31,7 @@ export function createScene(canvas: HTMLCanvasElement): SceneAssets {
     0.1,
     100,
   )
-  camera.position.set(0, 10, 8)
+  camera.position.set(0, 16, 5)
   camera.lookAt(0, 0, 0)
 
   const lightGroup = new THREE.Group()

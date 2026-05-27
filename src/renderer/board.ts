@@ -21,7 +21,7 @@ const boardState: BoardState = {
 
 const tileSize = 2.0
 const tileGap = 0.15
-const baseBlockHeight = 0.2
+const baseBlockHeight = 0.08
 const MAX_BOARD = 12
 
 function getTileStep(gridSize: number): number {
