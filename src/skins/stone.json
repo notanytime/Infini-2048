@@ -1,0 +1,56 @@
+{
+  "id": "stone",
+  "name": "自然石材",
+  "matte": {
+    "color": "#d4c5a9",
+    "pattern": "marble",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.95,
+    "metalness": 0.01,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "metal": {
+    "color": "#8b7355",
+    "pattern": "marble",
+    "patternScale": 0.8,
+    "patternRotation": 30,
+    "roughness": 0.3,
+    "metalness": 0.4,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0.2,
+    "clearcoatRoughness": 0.3
+  },
+  "crystal": {
+    "color": "#7fffd4",
+    "pattern": "sparkle",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.08,
+    "metalness": 0.05,
+    "emissiveColor": "#7fffd4",
+    "emissiveIntensity": 0.3,
+    "opacity": 0.9,
+    "clearcoat": 0.8,
+    "clearcoatRoughness": 0.1
+  },
+  "energy": {
+    "color": "#ffd700",
+    "pattern": "wave",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.05,
+    "metalness": 0.1,
+    "emissiveColor": "#ffd700",
+    "emissiveIntensity": 0.9,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  }
+}

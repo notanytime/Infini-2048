@@ -1,0 +1,56 @@
+{
+  "id": "retro",
+  "name": "复古像素",
+  "matte": {
+    "color": "#8bac0f",
+    "pattern": "pixel",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.9,
+    "metalness": 0.0,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "metal": {
+    "color": "#306230",
+    "pattern": "pixel",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.8,
+    "metalness": 0.1,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "crystal": {
+    "color": "#9bbc0f",
+    "pattern": "pixel",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.7,
+    "metalness": 0.0,
+    "emissiveColor": "#9bbc0f",
+    "emissiveIntensity": 0.3,
+    "opacity": 0.95,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "energy": {
+    "color": "#0f380f",
+    "pattern": "pixel",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.9,
+    "metalness": 0.0,
+    "emissiveColor": "#9bbc0f",
+    "emissiveIntensity": 1.0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  }
+}

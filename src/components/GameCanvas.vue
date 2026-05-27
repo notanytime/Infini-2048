@@ -8,6 +8,8 @@ import { createParticleSystem, updateParticles, emitParticles, clearParticles } 
 import { useAudio } from '../composables/useAudio'
 import * as THREE from 'three'
 
+const props = defineProps<{ showSkinPicker: boolean }>()
+
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const containerRef = ref<HTMLDivElement | null>(null)
 const gameStore = useGameStore()
@@ -18,6 +20,7 @@ let assets: SceneAssets | null = null
 let animationId = 0
 let lastTime = 0
 let zoomLevel = 1
+let isTransitioning = false
 
 function animate(timestamp: number) {
   animationId = requestAnimationFrame(animate)
@@ -31,6 +34,7 @@ function animate(timestamp: number) {
 }
 
 function handleKeydown(e: KeyboardEvent) {
+  if (isTransitioning) return
   const dirs: Record<string, string> = {
     ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
     w: 'up', s: 'down', a: 'left', d: 'right',
@@ -194,10 +198,81 @@ function cleanup() {
   }
 }
 
+function animateSkinTransition() {
+  if (!assets || isTransitioning) return
+  isTransitioning = true
+
+  const meshes: THREE.Mesh[] = []
+  assets.boardGroup.traverse(child => {
+    if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+      meshes.push(child)
+    }
+  })
+
+  const duration = 200
+  const startTime = performance.now()
+
+  function fadeOut() {
+    const elapsed = performance.now() - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    const opacity = 1 - progress
+
+    for (const mesh of meshes) {
+      const mat = mesh.material as THREE.MeshStandardMaterial
+      mat.transparent = true
+      mat.opacity = opacity
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(fadeOut)
+    } else {
+      updateBoard(assets!.boardGroup, gameStore.tiles, gameStore.state.gridSize)
+      fadeIn()
+    }
+  }
+
+  function fadeIn() {
+    const newMeshes: THREE.Mesh[] = []
+    assets!.boardGroup.traverse(child => {
+      if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+        newMeshes.push(child)
+      }
+    })
+
+    const fadeStartTime = performance.now()
+
+    function fadeInStep() {
+      const elapsed = performance.now() - fadeStartTime
+      const progress = Math.min(elapsed / duration, 1)
+      const opacity = progress
+
+      for (const mesh of newMeshes) {
+        const mat = mesh.material as THREE.MeshStandardMaterial
+        mat.transparent = true
+        mat.opacity = opacity
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(fadeInStep)
+      } else {
+        for (const mesh of newMeshes) {
+          const mat = mesh.material as THREE.MeshStandardMaterial
+          mat.transparent = mat.opacity < 1
+        }
+        isTransitioning = false
+      }
+    }
+
+    fadeInStep()
+  }
+
+  fadeOut()
+}
+
 watch(
   () => gameStore.tiles,
   (tiles) => {
-    if (assets) updateBoard(assets.boardGroup, tiles, gameStore.state.gridSize)
+    if (assets && !isTransitioning) updateBoard(assets.boardGroup, tiles, gameStore.state.gridSize)
   },
   { deep: true },
 )
@@ -206,6 +281,13 @@ watch(
   () => gameStore.state.gameOver,
   (isOver) => {
     if (isOver && !settingsStore.settings.muted) audio.playGameOverSound()
+  },
+)
+
+watch(
+  () => settingsStore.settings.currentSkinId,
+  () => {
+    animateSkinTransition()
   },
 )
 

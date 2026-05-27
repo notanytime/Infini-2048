@@ -1,6 +1,9 @@
 import * as THREE from 'three'
-import { createTileMaterial, clearMaterialCache } from './materials'
+import { createTileMaterialFromSkin, clearMaterialCache } from './materials'
 import { createTextPlane, clearTextureCache } from './text'
+import { getSkinById, getTierSkin } from '../skins'
+import { useSettingsStore } from '../stores/settings'
+import { getTier } from './tierHelper'
 import type { Tile } from '../types'
 
 interface BoardState {
@@ -19,7 +22,6 @@ const boardState: BoardState = {
   size: 0,
 }
 
-const tileSize = 2.0
 const tileGap = 0.15
 const baseBlockHeight = 0.08
 const MAX_BOARD = 12
@@ -90,6 +92,9 @@ export function updateBoard(boardGroup: THREE.Group, tiles: Tile[], gridSize: nu
     createBoard(boardGroup, gridSize)
   }
 
+  const settingsStore = useSettingsStore()
+  const skin = getSkinById(settingsStore.settings.currentSkinId)
+
   const activeIds = new Set(tiles.map(t => t.id))
 
   for (const [id, mesh] of boardState.boxMeshes) {
@@ -116,7 +121,9 @@ export function updateBoard(boardGroup: THREE.Group, tiles: Tile[], gridSize: nu
     let boxMesh = boardState.boxMeshes.get(tile.id)
     if (!boxMesh) {
       const geo = new THREE.BoxGeometry(ts * 0.92, height, ts * 0.92)
-      const mat = createTileMaterial(tile.value)
+      const tier = getTier(tile.value)
+      const tierSkin = getTierSkin(skin, tier)
+      const mat = createTileMaterialFromSkin(tierSkin)
       boxMesh = new THREE.Mesh(geo, mat)
       boxMesh.castShadow = true
       boxMesh.receiveShadow = true

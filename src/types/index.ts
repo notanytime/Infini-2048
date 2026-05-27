@@ -48,4 +48,5 @@ export interface Settings {
   effectIntensity: number
   muted: boolean
   locale: Language
+  currentSkinId: string
 }

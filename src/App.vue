@@ -5,10 +5,12 @@ import ScoreBoard from './components/ScoreBoard.vue'
 import Controls from './components/Controls.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import DebugPanel from './components/DebugPanel.vue'
+import SkinPicker from './components/SkinPicker.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const showDebug = ref(false)
+const showSkinPicker = ref(false)
 
 function toggleDebug(e: KeyboardEvent) {
   if (e.key === '`' || e.key === '~') {
@@ -25,16 +27,20 @@ onUnmounted(() => window.removeEventListener('keydown', toggleDebug))
   <div class="app-container">
     <header class="game-header">
       <h1 class="game-title">Infini-2048</h1>
-      <ScoreBoard />
+      <div class="header-actions">
+        <button class="skin-btn" @click="showSkinPicker = true" title="切换皮肤">🎨</button>
+        <ScoreBoard />
+      </div>
     </header>
     <main class="game-main">
-      <GameCanvas />
+      <GameCanvas :showSkinPicker="showSkinPicker" />
     </main>
     <footer class="game-footer">
       <Controls />
       <SettingsPanel />
       <DebugPanel v-if="showDebug" />
     </footer>
+    <SkinPicker v-if="showSkinPicker" @close="showSkinPicker = false" />
   </div>
 </template>
 
@@ -87,6 +93,26 @@ html, body {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skin-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.skin-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .game-main {

@@ -1,0 +1,56 @@
+{
+  "id": "cyberpunk",
+  "name": "赛博朋克",
+  "matte": {
+    "color": "#1a1a2e",
+    "pattern": "circuit",
+    "patternScale": 1.2,
+    "patternRotation": 0,
+    "roughness": 0.85,
+    "metalness": 0.1,
+    "emissiveColor": "#00ff88",
+    "emissiveIntensity": 0.15,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "metal": {
+    "color": "#2d2d44",
+    "pattern": "circuit",
+    "patternScale": 1.0,
+    "patternRotation": 45,
+    "roughness": 0.08,
+    "metalness": 0.98,
+    "emissiveColor": "#ff00ff",
+    "emissiveIntensity": 0.3,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "crystal": {
+    "color": "#00ffff",
+    "pattern": "sparkle",
+    "patternScale": 0.8,
+    "patternRotation": 0,
+    "roughness": 0.02,
+    "metalness": 0.05,
+    "emissiveColor": "#00ffff",
+    "emissiveIntensity": 0.5,
+    "opacity": 0.85,
+    "clearcoat": 0.9,
+    "clearcoatRoughness": 0.05
+  },
+  "energy": {
+    "color": "#ff00ff",
+    "pattern": "wave",
+    "patternScale": 1.5,
+    "patternRotation": 0,
+    "roughness": 0.01,
+    "metalness": 0.01,
+    "emissiveColor": "#ff00ff",
+    "emissiveIntensity": 1.2,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  }
+}

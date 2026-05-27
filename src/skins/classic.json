@@ -1,0 +1,56 @@
+{
+  "id": "classic",
+  "name": "经典2048",
+  "matte": {
+    "color": "#eee4da",
+    "pattern": "noise",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.92,
+    "metalness": 0.02,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "metal": {
+    "color": "#c0c0c0",
+    "pattern": "brushed",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.12,
+    "metalness": 0.95,
+    "emissiveColor": "#000000",
+    "emissiveIntensity": 0,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  },
+  "crystal": {
+    "color": "#5bc0de",
+    "pattern": "sparkle",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.05,
+    "metalness": 0.1,
+    "emissiveColor": "#5bc0de",
+    "emissiveIntensity": 0.25,
+    "opacity": 0.88,
+    "clearcoat": 0.7,
+    "clearcoatRoughness": 0.08
+  },
+  "energy": {
+    "color": "#1abc9c",
+    "pattern": "wave",
+    "patternScale": 1.0,
+    "patternRotation": 0,
+    "roughness": 0.03,
+    "metalness": 0.03,
+    "emissiveColor": "#1abc9c",
+    "emissiveIntensity": 0.85,
+    "opacity": 1.0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0
+  }
+}
