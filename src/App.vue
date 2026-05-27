@@ -84,7 +84,7 @@ onUnmounted(() => window.removeEventListener('keydown', toggleDebug))
 html, body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   background: #1a1a2e;
   font-family: 'Poppins', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
   color: #e0e0e0;
@@ -101,8 +101,7 @@ html, body {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  height: 100vh;
-  overflow-y: auto;
+  min-height: 100vh;
   max-width: 750px;
   margin: 0 auto;
   padding: 12px;
