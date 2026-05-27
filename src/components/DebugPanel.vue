@@ -1,92 +1,45 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useGameStore } from '../stores/game'
 
 const gameStore = useGameStore()
+const emit = defineEmits(['toast'])
 
-function getMaxId(): number {
-  let max = 0
-  for (let r = 0; r < gameStore.state.gridSize; r++)
-    for (let c = 0; c < gameStore.state.gridSize; c++) {
-      const t = gameStore.state.grid[r]?.[c]
-      if (t && t.id > max) max = t.id
-    }
-  return max
-}
+const expanded = ref(false)
 
 function fillRandom() {
-  const powers = [2, 4, 8, 16, 32, 64, 128, 256]
-  let id = getMaxId()
-  for (let r = 0; r < gameStore.state.gridSize; r++)
-    for (let c = 0; c < gameStore.state.gridSize; c++) {
-      if (!gameStore.state.grid[r][c]) {
-        gameStore.state.grid[r][c] = {
-          id: ++id,
-          value: powers[Math.floor(Math.random() * powers.length)],
-          row: r, col: c,
-        }
-      }
-    }
+  gameStore.debugFillRandom()
+  emit('toast', '已随机填充空位')
 }
 
 function forceExpand() {
-  const oldSize = gameStore.state.gridSize
-  const newSize = oldSize + 1
-  const newGrid: any[][] = Array.from({ length: newSize }, (_, r) =>
-    Array.from({ length: newSize }, (_, c) =>
-      (r < oldSize && c < oldSize && gameStore.state.grid[r]?.[c])
-        ? { ...gameStore.state.grid[r][c]!, row: r, col: c }
-        : null
-    )
-  )
-  gameStore.state.gridSize = newSize
-  gameStore.state.grid = newGrid
+  gameStore.debugForceExpand()
+  emit('toast', '已强制扩展棋盘')
 }
 
 function resetSave() {
   localStorage.removeItem('infini2048_save')
   localStorage.removeItem('infini2048_highScore')
-}
-
-function clearGrid() {
-  gameStore.state.gridSize = 4
-  gameStore.state.grid = Array.from({ length: 4 }, () => Array(4).fill(null))
-  gameStore.state.score = 0
-  gameStore.state.comboCount = 0
-  gameStore.state.gameOver = false
-  gameStore.state.history = []
+  emit('toast', '已清空存档')
 }
 
 function fillTestGrid() {
-  clearGrid()
-  const tiles = [
-    [1024, 1024, 512, 512],
-    [256, 256, 128, 64],
-    [32, 16, 8, 4],
-    [2, 0, 0, 0],
-  ]
-  let id = 0
-  for (let r = 0; r < 4; r++)
-    for (let c = 0; c < 4; c++)
-      if (tiles[r][c])
-        gameStore.state.grid[r][c] = { id: ++id, value: tiles[r][c], row: r, col: c }
+  gameStore.debugFillTestGrid()
+  emit('toast', '已加载合并演示布局')
 }
 
 function fillAllTiers() {
-  clearGrid()
-  const specs: [number, number, number][] = [
-    [0, 0, 2], [0, 1, 8], [0, 2, 64], [0, 3, 256],
-    [1, 0, 512], [1, 1, 1024], [1, 2, 2048], [1, 3, 8192],
-    [2, 0, 16384], [2, 1, 32768], [2, 2, 16], [2, 3, 128],
-  ]
-  let id = 0
-  for (const [r, c, v] of specs)
-    gameStore.state.grid[r][c] = { id: ++id, value: v, row: r, col: c }
+  gameStore.debugFillAllTiers()
+  emit('toast', '已加载全材质展示布局')
 }
 </script>
 
 <template>
   <div class="debug-panel">
-    <div class="debug-grid">
+    <button class="debug-toggle" @click="expanded = !expanded">
+      {{ expanded ? '收起调试' : '展开调试' }}
+    </button>
+    <div v-if="expanded" class="debug-content">
       <div class="debug-section">
         <h4>快捷操作</h4>
         <button @click="fillRandom">随机填充空位</button>
@@ -98,6 +51,9 @@ function fillAllTiers() {
         <button @click="fillTestGrid">合并演示</button>
         <button @click="fillAllTiers">全材质展示</button>
       </div>
+      <div class="debug-hint">
+        点击棋盘空位可手动放置方块
+      </div>
     </div>
   </div>
 </template>
@@ -107,22 +63,70 @@ function fillAllTiers() {
   background: rgba(0,0,0,0.85);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 10px;
-  padding: 10px 16px;
+  padding: 8px 12px;
   font-size: 0.78rem;
   max-width: 500px;
   width: 100%;
 }
-.debug-grid { display: flex; flex-direction: column; gap: 8px; }
-.debug-section { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+
+.debug-toggle {
+  width: 100%;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  color: #aaa;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.debug-toggle:hover {
+  background: rgba(255,255,255,0.2);
+  color: #ddd;
+}
+
+.debug-content {
+  margin-top: 8px;
+}
+
+.debug-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .debug-section h4 {
-  color: #aaa; font-size: 0.7rem; margin: 0; width: 100%;
-  border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 2px;
+  color: #aaa;
+  font-size: 0.65rem;
+  margin: 0;
+  width: 100%;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 2px;
 }
+
+.debug-hint {
+  color: #666;
+  font-size: 0.6rem;
+  text-align: center;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
 button {
-  padding: 4px 10px; border: none; border-radius: 5px;
-  background: rgba(255,255,255,0.15); color: #ddd;
-  font-size: 0.72rem; cursor: pointer; font-family: inherit;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.15);
+  color: #ddd;
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: inherit;
 }
+
 button:hover { background: rgba(255,255,255,0.25); }
 button.danger { background: rgba(231,76,60,0.5); }
 button.danger:hover { background: rgba(231,76,60,0.7); }

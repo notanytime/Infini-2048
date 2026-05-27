@@ -6,11 +6,29 @@ import Controls from './components/Controls.vue'
 import SettingsPanel from './components/SettingsPanel.vue'
 import DebugPanel from './components/DebugPanel.vue'
 import SkinPicker from './components/SkinPicker.vue'
+import Toast from './components/Toast.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const showDebug = ref(false)
 const showSkinPicker = ref(false)
+
+interface ToastItem {
+  id: number
+  message: string
+}
+
+const toasts = ref<ToastItem[]>([])
+let toastId = 0
+
+function addToast(message: string) {
+  const id = ++toastId
+  toasts.value.push({ id, message })
+}
+
+function removeToast(id: number) {
+  toasts.value = toasts.value.filter(t => t.id !== id)
+}
 
 function toggleDebug(e: KeyboardEvent) {
   if (e.key === '`' || e.key === '~') {
@@ -33,14 +51,26 @@ onUnmounted(() => window.removeEventListener('keydown', toggleDebug))
       </div>
     </header>
     <main class="game-main">
-      <GameCanvas :showSkinPicker="showSkinPicker" />
+      <GameCanvas
+        :showSkinPicker="showSkinPicker"
+        :debugMode="showDebug"
+        @toast="addToast"
+      />
     </main>
     <footer class="game-footer">
       <Controls />
       <SettingsPanel />
-      <DebugPanel v-if="showDebug" />
+      <DebugPanel v-if="showDebug" @toast="addToast" />
     </footer>
     <SkinPicker v-if="showSkinPicker" @close="showSkinPicker = false" />
+    <div class="toast-container">
+      <Toast
+        v-for="toast in toasts"
+        :key="toast.id"
+        :message="toast.message"
+        @close="removeToast(toast.id)"
+      />
+    </div>
   </div>
 </template>
 
@@ -76,6 +106,7 @@ html, body {
   margin: 0 auto;
   padding: 12px;
   gap: 8px;
+  position: relative;
 }
 
 .game-header {
@@ -132,5 +163,17 @@ html, body {
   gap: 8px;
   width: 100%;
   max-width: 650px;
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 200;
+  pointer-events: none;
 }
 </style>

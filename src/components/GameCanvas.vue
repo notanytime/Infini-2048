@@ -6,15 +6,20 @@ import { createScene, resize, type SceneAssets } from '../renderer/scene'
 import { clearBoard, updateBoard } from '../renderer/board'
 import { createParticleSystem, updateParticles, emitParticles, clearParticles } from '../renderer/particles'
 import { useAudio } from '../composables/useAudio'
+import ValueSelector from './ValueSelector.vue'
 import * as THREE from 'three'
 
-const props = defineProps<{ showSkinPicker: boolean }>()
+const props = defineProps<{ showSkinPicker: boolean; debugMode: boolean }>()
+const emit = defineEmits(['toast'])
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const containerRef = ref<HTMLDivElement | null>(null)
 const gameStore = useGameStore()
 const settingsStore = useSettingsStore()
 const audio = useAudio()
+
+const showValueSelector = ref(false)
+const selectedCell = ref<{ row: number; col: number } | null>(null)
 
 let assets: SceneAssets | null = null
 let animationId = 0
@@ -34,7 +39,7 @@ function animate(timestamp: number) {
 }
 
 function handleKeydown(e: KeyboardEvent) {
-  if (isTransitioning) return
+  if (isTransitioning || showValueSelector.value) return
   const dirs: Record<string, string> = {
     ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
     w: 'up', s: 'down', a: 'left', d: 'right',
@@ -93,6 +98,52 @@ function emitMergeParticles() {
         )
       }
     }
+}
+
+function handleClick(e: MouseEvent) {
+  if (!props.debugMode || !assets) return
+
+  const canvas = canvasRef.value!
+  const rect = canvas.getBoundingClientRect()
+  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1
+  const y = -((e.clientY - rect.top) / rect.height) * 2 + 1
+
+  const raycaster = new THREE.Raycaster()
+  raycaster.setFromCamera(new THREE.Vector2(x, y), assets.camera)
+
+  const intersects = raycaster.intersectObjects(assets.boardGroup.children, true)
+  if (intersects.length === 0) return
+
+  const hitPoint = intersects[0].point
+  const gs = gameStore.state.gridSize
+  const step = 12 / gs
+  const off = (gs - 1) * step / 2
+
+  const col = Math.round((hitPoint.x + off) / step)
+  const row = Math.round((hitPoint.z + off) / step)
+
+  if (row < 0 || row >= gs || col < 0 || col >= gs) return
+  if (gameStore.state.grid[row]?.[col]) {
+    emit('toast', '该位置已有方块')
+    return
+  }
+
+  selectedCell.value = { row, col }
+  showValueSelector.value = true
+}
+
+function handleValueSelect(e: { row: number; col: number; value: number }) {
+  const success = gameStore.debugPlaceTile(e.row, e.col, e.value)
+  if (success) {
+    emit('toast', `已放置 ${e.value}`)
+  }
+  showValueSelector.value = false
+  selectedCell.value = null
+}
+
+function handleValueClose() {
+  showValueSelector.value = false
+  selectedCell.value = null
 }
 
 let touchStartX = 0, touchStartY = 0, touchStartTime = 0
@@ -173,6 +224,7 @@ async function initCanvas() {
 
   window.addEventListener('keydown', handleKeydown)
   window.addEventListener('resize', handleResize)
+  canvasRef.value.addEventListener('click', handleClick)
   canvasRef.value.addEventListener('wheel', handleWheel, { passive: false })
   if (containerRef.value) {
     containerRef.value.addEventListener('touchstart', handleTouchStart, { passive: false })
@@ -185,6 +237,7 @@ function cleanup() {
   cancelAnimationFrame(animationId)
   window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('resize', handleResize)
+  canvasRef.value?.removeEventListener('click', handleClick)
   canvasRef.value?.removeEventListener('wheel', handleWheel)
   if (containerRef.value) {
     containerRef.value.removeEventListener('touchstart', handleTouchStart)
@@ -301,7 +354,14 @@ onUnmounted(() => { cleanup() })
 
 <template>
   <div ref="containerRef" class="canvas-container">
-    <canvas ref="canvasRef" class="game-canvas" />
+    <canvas ref="canvasRef" class="game-canvas" :class="{ 'debug-cursor': debugMode }" />
+    <ValueSelector
+      v-if="showValueSelector && selectedCell"
+      :row="selectedCell.row"
+      :col="selectedCell.col"
+      @select="handleValueSelect"
+      @close="handleValueClose"
+    />
   </div>
 </template>
 
@@ -314,11 +374,15 @@ onUnmounted(() => { cleanup() })
   align-items: center;
   justify-content: center;
   touch-action: none;
+  position: relative;
 }
 .game-canvas {
   width: 100%;
   height: 100%;
   min-height: 300px;
   display: block;
+}
+.debug-cursor {
+  cursor: crosshair;
 }
 </style>
